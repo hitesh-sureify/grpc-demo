@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package employeepb;
+
+option go_package = ".;employeepb";
+
+message Employee{
+    int32 id = 1;
+    string name = 2;
+    string dept = 3;
+    repeated string skills = 4;
+}
+
+message ID{
+    int32 id = 1;
+}
+
+service EmployeeService {
+    rpc CreateEmployee (Employee) returns (ID) {}
+    rpc GetEmployee (ID) returns (Employee) {}
+    rpc UpdateEmployee (Employee) returns (ID) {}
+    rpc DeleteEmployee (ID) returns (ID) {}
+}
