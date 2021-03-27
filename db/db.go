@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"context"
 
-	pb "github.com/hitesh-sureify/GrpcDemo/proto"
+	pb "github.com/hitesh-sureify/grpc-demo/proto"
     _ "github.com/go-sql-driver/mysql"
 )
 

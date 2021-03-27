@@ -7,8 +7,8 @@ import (
 	"context"
 	//"errors"
 	
-	pb "github.com/hitesh-sureify/GrpcDemo/proto"
-	"./db"
+	pb "github.com/hitesh-sureify/grpc-demo/proto"
+	"github.com/hitesh-sureify/grpc-demo/db"
 
 	"google.golang.org/grpc"
 )
@@ -38,7 +38,7 @@ func main() {
 
 func (s * server) CreateEmployee(ctx context.Context, emp *pb.Employee) (*pb.ID, error){
 
-	if id, err := Insert(ctx,emp); err != nil {
+	if id, err := db.Insert(ctx,emp); err != nil {
 		return &pb.ID{Id: id}, nil
 	} else {
 		return &pb.ID{Id: id}, nil
@@ -46,7 +46,7 @@ func (s * server) CreateEmployee(ctx context.Context, emp *pb.Employee) (*pb.ID,
 }
 
 func (s * server) GetEmployee(ctx context.Context, emp *pb.ID) (*pb.Employee, error){
-	if empData, err := Get(emp.Id); err != nil {
+	if empData, err := db.Get(emp.Id); err != nil {
 		return nil, err
 	} else {
 		return empData, nil
@@ -55,7 +55,7 @@ func (s * server) GetEmployee(ctx context.Context, emp *pb.ID) (*pb.Employee, er
 
 func (s * server) UpdateEmployee(ctx context.Context, emp *pb.Employee) (*pb.ID, error){
 	
-	if id, err := Update(ctx,emp); err != nil {
+	if id, err := db.Update(ctx,emp); err != nil {
 		return &pb.ID{Id: id}, nil
 	} else {
 		return &pb.ID{Id: id}, nil
@@ -65,7 +65,7 @@ func (s * server) UpdateEmployee(ctx context.Context, emp *pb.Employee) (*pb.ID,
 
 func (s * server) DeleteEmployee(ctx context.Context, emp *pb.ID) (*pb.ID, error){
 
-	if id, err := Delete(ctx,emp.Id); err != nil {
+	if id, err := db.Delete(ctx,emp.Id); err != nil {
 		return &pb.ID{Id: id}, nil
 	} else {
 		return &pb.ID{Id: id}, nil
@@ -73,7 +73,4 @@ func (s * server) DeleteEmployee(ctx context.Context, emp *pb.ID) (*pb.ID, error
 	
 }
 
-// func (s * server) mustEmbedUnimplementedEmployeeServiceServer(){
-// 	fmt.Println("just an implementation")
-// }
 
