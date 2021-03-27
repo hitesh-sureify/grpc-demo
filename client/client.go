@@ -30,6 +30,8 @@ func main(){
 
 	fmt.Println("Grpc Employee Service app!!!!!!!!")
 
+	fmt.Println("Choose from below : \n 1. Create an Employee record. \n 2. Show an Employee record. \n 3. Update an Employee record. \n 4. Delete an Employee record.")
+
 	choice := bufio.NewReader(os.Stdin)
 	text, _ := choice.ReadString('\n')
 
