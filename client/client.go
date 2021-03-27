@@ -3,17 +3,29 @@ package main
 import(
 	"log"
 	"context"
-	"bufio"
+	"net/http"
 	"os"
 	"strings"
 	"time"
 	"fmt"
 	"strconv"
+	"encoding/json"
 
 	pb "github.com/hitesh-sureify/grpc-demo/proto"
 
 	"google.golang.org/grpc"
+	"github.com/gorilla/mux"
 )
+
+var c pb.EmployeeServiceClient
+
+type EmployeeAPI struct{
+	Id     int32    `json:"id"`
+	Name   string   `json:"name"`
+	Dept   string   `json:"dept"`
+	Skills string   `json:"skills"`
+}
+
 
 func main(){
 	conn, err := grpc.Dial(os.Getenv("GRPC_SRV_ADDR"), grpc.WithInsecure())
@@ -23,99 +35,115 @@ func main(){
 
 	defer conn.Close()
 
-	c := pb.NewEmployeeServiceClient(conn)
+	c = pb.NewEmployeeServiceClient(conn)
+
+	r := mux.NewRouter()
+
+	r.HandleFunc("/api/employees/{id}", getEmployee).Methods("GET")
+	r.HandleFunc("/api/employees", createEmployee).Methods("POST")
+	r.HandleFunc("/api/employees/{id}", updateEmployee).Methods("PUT")
+	r.HandleFunc("/api/employees/{id}", deleteEmployee).Methods("DELETE")
+
+	log.Fatal(http.ListenAndServe(":8000", r))
+	
+}
+
+func getEmployee(w http.ResponseWriter, r *http.Request) {
+
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	fmt.Println("Grpc Employee Service app!!!!!!!!")
+	w.Header().Set("Content-Type", "application/json")
 
-	fmt.Println("Choose from below : \n 1. Create an Employee record. \n 2. Show an Employee record. \n 3. Update an Employee record. \n 4. Delete an Employee record.")
+	params := mux.Vars(r)
 
-	choice := bufio.NewReader(os.Stdin)
-	text, _ := choice.ReadString('\n')
+	empId, _ := strconv.Atoi(params["id"])
 
-	switch(text){
-	case "1\n":
-		fmt.Println("\nEnter Name : ")
-		name := bufio.NewReader(os.Stdin)
-		n, _ := name.ReadString('\n')
-		n = strings.Trim(n, "\n")
+	var msg string
 
-		fmt.Println("\nEnter Dept : ")
-		dept := bufio.NewReader(os.Stdin)
-		d, _ := dept.ReadString('\n')
-		d = strings.Trim(d, "\n")
-
-		fmt.Println("\nEnter Skills comma separated : ")
-		skills := bufio.NewReader(os.Stdin)
-		s, _ := skills.ReadString('\n')
-		s = strings.Trim(s, "\n")
-
-		emp, err := c.CreateEmployee(ctx, &pb.Employee{Name: n, Dept: d, Skills: strings.Split(s, ",")})
-		if err != nil{
-			log.Fatalf("could not add employee : %v", err)
-		}
-		fmt.Println("Employee added \n with ID : ", emp.Id)
-	
-	case "2\n":
-		fmt.Println("\nEnter ID : ")
-		id := bufio.NewReader(os.Stdin)
-		i, _ := id.ReadString('\n')
-		empId, _ := strconv.Atoi(strings.Trim(i, "\n"))
-
-		emp, err := c.GetEmployee(ctx, &pb.ID{Id : int32(empId)})
-		if err != nil{
-			log.Fatalf("could not get employee : %v", err)
-		}
-		fmt.Println("Employee Name : ", emp.Name)
-		fmt.Println("Employee Dept : ", emp.Dept)
-		fmt.Println("Employee Skills : ", strings.Join(emp.Skills, ","))
-	
-	case "3\n":
-		fmt.Println("\nEnter ID : ")
-		id := bufio.NewReader(os.Stdin)
-		i, _ := id.ReadString('\n')
-		empId, _ := strconv.Atoi(strings.Trim(i, "\n"))
-
-		fmt.Println("\nEnter Name : ")
-		name := bufio.NewReader(os.Stdin)
-		n, _ := name.ReadString('\n')
-		n = strings.Trim(n, "\n")
-
-		fmt.Println("\nEnter Dept : ")
-		dept := bufio.NewReader(os.Stdin)
-		d, _ := dept.ReadString('\n')
-		d = strings.Trim(d, "\n")
-
-		fmt.Println("\nEnter Skills comma separated : ")
-		skills := bufio.NewReader(os.Stdin)
-		s, _ := skills.ReadString('\n')
-		s = strings.Trim(s, "\n")
-
-		emp, err := c.UpdateEmployee(ctx, &pb.Employee{Id: int32(empId), Name: n, Dept: d, Skills: strings.Split(s, ",")})
-		if err != nil{
-			log.Fatalf("could not update employee : %v", err)
-		}
-		if emp.Id < 0{
-			log.Fatalf("could not update employee record")
-		}
-		fmt.Println("Employee updated. Rows affected : ", emp.Id)
-	
-	case "4\n":
-		fmt.Println("\nEnter ID : ")
-		id := bufio.NewReader(os.Stdin)
-		i, _ := id.ReadString('\n')
-		empId, _ := strconv.Atoi(strings.Trim(i, "\n"))
-
-		emp, err := c.DeleteEmployee(ctx, &pb.ID{Id : int32(empId)})
-		if err != nil{
-			log.Fatalf("could not delete employee record : %v", err)
-		}
-		if emp.Id < 0{
-			log.Fatalf("could not delete employee record")
-		}
-		fmt.Println("Employee record deleted. Rows affected : ", emp.Id)
-
+	empData, err := c.GetEmployee(ctx, &pb.ID{Id : int32(empId)})
+	if err != nil{
+		msg = fmt.Sprintf("Could not get employee : %s", err.Error())
+	} else{
+		msg = fmt.Sprintf("Employee record fetched for Id %d =>  Name : %s, Dept : %s, Skills : %s", empId, empData.Name, empData.Dept, strings.Join(empData.Skills, ","))
 	}
+	json.NewEncoder(w).Encode(msg)
+}
+
+func createEmployee(w http.ResponseWriter, r *http.Request) {
+
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	w.Header().Set("Content-Type", "application/json")
+
+	var emp EmployeeAPI
+	_ = json.NewDecoder(r.Body).Decode(&emp)
+
+	var msg string
+
+	empData, err := c.CreateEmployee(ctx, &pb.Employee{Name: emp.Name, Dept: emp.Dept, Skills: strings.Split(emp.Skills, ",")})
+	if err != nil{
+		msg = fmt.Sprintf("Could not create employee record : %s", err.Error())
+	} else{
+		msg = fmt.Sprintf("Employee created  with ID : %d", empData.Id)
+	}
+
+	json.NewEncoder(w).Encode(msg)
+}
+
+func updateEmployee(w http.ResponseWriter, r *http.Request) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	w.Header().Set("Content-Type", "application/json")
+
+	params := mux.Vars(r)
+
+	var emp EmployeeAPI
+	_ = json.NewDecoder(r.Body).Decode(&emp)
+
+	var msg string
+	empId, _ := strconv.Atoi(params["id"])
+
+	empData, err := c.UpdateEmployee(ctx, &pb.Employee{Id: int32(empId), Name: emp.Name, Dept: emp.Dept, Skills: strings.Split(emp.Skills, ",")})
+	if err != nil{
+		msg = fmt.Sprintf("Could not update employee record : %s", err.Error())
+	}
+	if empData.Id < 0{
+		msg = fmt.Sprintf("could not update employee record")
+	} else{
+		msg = fmt.Sprintf("Employee record updated. Rows affected : %d", empData.Id)
+	}
+
+	json.NewEncoder(w).Encode(msg)
+}
+
+func deleteEmployee(w http.ResponseWriter, r *http.Request) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	w.Header().Set("Content-Type", "application/json")
+
+	params := mux.Vars(r)
+
+	empId, _ := strconv.Atoi(params["id"])
+
+	var msg string
+
+	empData, err := c.DeleteEmployee(ctx, &pb.ID{Id : int32(empId)})
+	if err != nil{
+		msg = fmt.Sprintf("Could not delete employee record : %s", err.Error())
+	}
+	if empData.Id <= 0{
+		msg = fmt.Sprintf("Could not delete employee record")
+	} else {
+		msg = fmt.Sprintf("Employee record deleted. Rows affected : %d", empData.Id)
+	}
+
+	json.NewEncoder(w).Encode(msg)
 }
