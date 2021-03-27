@@ -16,7 +16,7 @@ import(
 )
 
 func main(){
-	conn, err := grpc.Dial("127.0.0.1:50052", grpc.WithInsecure())
+	conn, err := grpc.Dial(os.Getenv("GRPC_SRV_ADDR"), grpc.WithInsecure())
 	if err != nil{
 		log.Fatalf("Could not connect to the server")
 	}

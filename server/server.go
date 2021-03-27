@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"fmt"
+	"os"
 	"net"
 	"log"
 	"context"
@@ -19,7 +19,7 @@ type server struct{
 
 func main() {
 	
-	listen, err := net.Listen("tcp", "127.0.0.1:50052")
+	listen, err := net.Listen("tcp", os.Getenv("GRPC_SRV_ADDR"))
 	if err != nil{
 		log.Fatalf("Could not listen on port : %v", err)
 	}

@@ -5,18 +5,14 @@ import (
 	"strings"
 	"fmt"
 	"context"
+	"os"
 
 	pb "github.com/hitesh-sureify/grpc-demo/proto"
     _ "github.com/go-sql-driver/mysql"
 )
 
 func dbConn() (db *sql.DB) {
-    dbDriver := "mysql"
-    dbUser := "hitesh"
-    dbPass := "68c#sistEdgCD4"
-	dbName := "MYSQLTEST"
-	dbHost := "172.17.0.1:3306"
-    db, err := sql.Open(dbDriver, dbUser+":"+dbPass+"@tcp(" + dbHost + ")/"+dbName)
+    db, err := sql.Open(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER")+":"+os.Getenv("DB_PASS")+"@tcp(" + os.Getenv("DB_HOST") + ")/"+os.Getenv("DB_NAME"))
     if err != nil {
         panic(err.Error())
     }
