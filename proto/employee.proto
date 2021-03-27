@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package employeepb;
+package proto;
 
-option go_package = ".;employeepb";
+option go_package = "proto";
 
 message Employee{
     int32 id = 1;
