@@ -64,9 +64,11 @@ func main(){
 
 		emp, err := c.GetEmployee(ctx, &pb.ID{Id : int32(empId)})
 		if err != nil{
-			log.Fatalf("could not add employee : %v", err)
+			log.Fatalf("could not get employee : %v", err)
 		}
-		fmt.Println("Employee name : ", emp.Name)
+		fmt.Println("Employee Name : ", emp.Name)
+		fmt.Println("Employee Dept : ", emp.Dept)
+		fmt.Println("Employee Skills : ", strings.Join(emp.Skills, ","))
 	
 	case "3\n":
 		fmt.Println("\nEnter ID : ")
@@ -93,7 +95,10 @@ func main(){
 		if err != nil{
 			log.Fatalf("could not update employee : %v", err)
 		}
-		fmt.Println("Employee updated \n with ID : ", emp.Id)
+		if emp.Id < 0{
+			log.Fatalf("could not update employee record")
+		}
+		fmt.Println("Employee updated. Rows affected : ", emp.Id)
 	
 	case "4\n":
 		fmt.Println("\nEnter ID : ")
@@ -101,11 +106,14 @@ func main(){
 		i, _ := id.ReadString('\n')
 		empId, _ := strconv.Atoi(strings.Trim(i, "\n"))
 
-		_, err := c.DeleteEmployee(ctx, &pb.ID{Id : int32(empId)})
+		emp, err := c.DeleteEmployee(ctx, &pb.ID{Id : int32(empId)})
 		if err != nil{
 			log.Fatalf("could not delete employee record : %v", err)
 		}
-		fmt.Println("Employee record deleted")
+		if emp.Id < 0{
+			log.Fatalf("could not delete employee record")
+		}
+		fmt.Println("Employee record deleted. Rows affected : ", emp.Id)
 
 	}
 }
