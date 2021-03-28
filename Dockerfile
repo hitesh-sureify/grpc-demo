@@ -11,8 +11,6 @@ RUN go mod download
 COPY . .
 
 ENV GRPC_SRV_ADDR :50052
-ENV DB_USER root
-ENV DB_PASS admin
 
 RUN go build
 
