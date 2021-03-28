@@ -2,7 +2,8 @@ package middleware
 
 import (
 	"net/http"
-	
+	"os"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
@@ -20,10 +21,6 @@ func Register() {
 	prometheus.MustRegister(counter)
 }
 
-func StartPrometheus(){
-	go func() {
-		pServer := http.NewServeMux()
-		pServer.Handle("/metrics", promhttp.Handler())
-		http.ListenAndServe(":2112", pServer)
-	}()
+func MaskPromHandler(w http.ResponseWriter, r *http.Request) {
+	promhttp.Handler().ServeHTTP(w, r)
 }

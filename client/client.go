@@ -29,6 +29,10 @@ type EmployeeAPI struct{
 
 
 func main(){
+
+	middleware.Register()
+	middleware.StartPrometheus()
+
 	conn, err := grpc.Dial(os.Getenv("GRPC_SRV_ADDR"), grpc.WithInsecure())
 	if err != nil{
 		log.Fatalf("Could not connect to the server")
@@ -44,6 +48,7 @@ func main(){
 	r.HandleFunc("/api/employees", createEmployee).Methods("POST")
 	r.HandleFunc("/api/employees/{id}", updateEmployee).Methods("PUT")
 	r.HandleFunc("/api/employees/{id}", deleteEmployee).Methods("DELETE")
+	r.HandleFunc("/metrics", middleware.MaskPromHandler)
 
 	log.Fatal(http.ListenAndServe(":8000", r))
 	
