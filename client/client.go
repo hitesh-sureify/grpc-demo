@@ -12,6 +12,7 @@ import(
 	"encoding/json"
 
 	pb "github.com/hitesh-sureify/grpc-demo/proto"
+	"github.com/hitesh-sureify/grpc-demo/middleware"
 
 	"google.golang.org/grpc"
 	"github.com/gorilla/mux"
