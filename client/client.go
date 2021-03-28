@@ -55,7 +55,7 @@ func main(){
 
 func getEmployee(w http.ResponseWriter, r *http.Request) {
 
-	middleware.incoming_api_req_counter.Add(1)
+	middleware.Incoming_api_req_counter.Add(1)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -70,7 +70,7 @@ func getEmployee(w http.ResponseWriter, r *http.Request) {
 
 	empData, err := c.GetEmployee(ctx, &pb.ID{Id : int32(empId)})
 	if err != nil{
-		middleware.emp_get_fail_counter.Add(1)
+		middleware.Emp_get_fail_counter.Add(1)
 		msg = fmt.Sprintf("Could not get employee : %s", err.Error())
 	} else{
 		msg = fmt.Sprintf("Employee record fetched for Id %d =>  Name : %s, Dept : %s, Skills : %s", empId, empData.Name, empData.Dept, strings.Join(empData.Skills, ","))
@@ -80,7 +80,7 @@ func getEmployee(w http.ResponseWriter, r *http.Request) {
 
 func createEmployee(w http.ResponseWriter, r *http.Request) {
 
-	middleware.incoming_api_req_counter.Add(1)
+	middleware.Incoming_api_req_counter.Add(1)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -94,7 +94,7 @@ func createEmployee(w http.ResponseWriter, r *http.Request) {
 
 	empData, err := c.CreateEmployee(ctx, &pb.Employee{Name: emp.Name, Dept: emp.Dept, Skills: strings.Split(emp.Skills, ",")})
 	if err != nil{
-		middleware.emp_create_fail_counter.Add(1)
+		middleware.Emp_create_fail_counter.Add(1)
 		msg = fmt.Sprintf("Could not create employee record : %s", err.Error())
 	} else{
 		msg = fmt.Sprintf("Employee created  with ID : %d", empData.Id)
@@ -105,7 +105,7 @@ func createEmployee(w http.ResponseWriter, r *http.Request) {
 
 func updateEmployee(w http.ResponseWriter, r *http.Request) {
 
-	middleware.incoming_api_req_counter.Add(1)
+	middleware.Incoming_api_req_counter.Add(1)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -122,11 +122,11 @@ func updateEmployee(w http.ResponseWriter, r *http.Request) {
 
 	empData, err := c.UpdateEmployee(ctx, &pb.Employee{Id: int32(empId), Name: emp.Name, Dept: emp.Dept, Skills: strings.Split(emp.Skills, ",")})
 	if err != nil{
-		middleware.emp_update_fail_counter.Add(1)
+		middleware.Emp_update_fail_counter.Add(1)
 		msg = fmt.Sprintf("Could not update employee record : %s", err.Error())
 	}
 	if empData.Id < 0{
-		middleware.emp_update_fail_counter.Add(1)
+		middleware.Emp_update_fail_counter.Add(1)
 		msg = fmt.Sprintf("could not update employee record")
 	} else{
 		msg = fmt.Sprintf("Employee record updated. Rows affected : %d", empData.Id)
@@ -137,7 +137,7 @@ func updateEmployee(w http.ResponseWriter, r *http.Request) {
 
 func deleteEmployee(w http.ResponseWriter, r *http.Request) {
 
-	middleware.incoming_api_req_counter.Add(1)
+	middleware.Incoming_api_req_counter.Add(1)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -152,11 +152,11 @@ func deleteEmployee(w http.ResponseWriter, r *http.Request) {
 
 	empData, err := c.DeleteEmployee(ctx, &pb.ID{Id : int32(empId)})
 	if err != nil{
-		middleware.emp_delete_fail_counter.Add(1)
+		middleware.Emp_delete_fail_counter.Add(1)
 		msg = fmt.Sprintf("Could not delete employee record : %s", err.Error())
 	}
 	if empData.Id <= 0{
-		middleware.emp_delete_fail_counter.Add(1)
+		middleware.Emp_delete_fail_counter.Add(1)
 		msg = fmt.Sprintf("Could not delete employee record")
 	} else {
 		msg = fmt.Sprintf("Employee record deleted. Rows affected : %d", empData.Id)
