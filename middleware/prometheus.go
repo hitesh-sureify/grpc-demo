@@ -11,8 +11,8 @@ var (
 	counter = prometheus.NewCounter(
 	   prometheus.CounterOpts{
 		  Namespace: "golang",
-		  Name:      "request_counter",
-		  Help:      "counts incoming requests",
+		  Name:      "request_counter_to_api",
+		  Help:      "counts incoming requests to api",
 	   })
   )
 
