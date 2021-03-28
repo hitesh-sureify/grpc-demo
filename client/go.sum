@@ -65,6 +65,7 @@ github.com/go-logfmt/logfmt v0.3.0/go.mod h1:Qt1PoO58o5twSAckw1HlFXLmHsOX5/0LbT9
 github.com/go-logfmt/logfmt v0.4.0/go.mod h1:3RMwSq7FuexP4Kalkev3ejPJsZTpXXBr9+V4qmtdjCk=
 github.com/go-logfmt/logfmt v0.5.0/go.mod h1:wCYkCAKZfumFQihp8CzCvQ3paCTfi41vtzG1KdI/P7A=
 github.com/go-sql-driver/mysql v1.4.0/go.mod h1:zAC/RDZ24gD3HViQzih4MyKcchzm+sOG5ZlKdlhCg5w=
+github.com/go-sql-driver/mysql v1.5.0 h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7/mN66gGcHOs=
 github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/gogo/googleapis v1.1.0/go.mod h1:gf4bu3Q80BeJ6H1S1vYPm8/ELATdvryBaNFGgqEef3s=
@@ -132,10 +133,10 @@ github.com/hashicorp/logutils v1.0.0/go.mod h1:QIAnNjmIWmVIIkWDTG1z5v++HQmx9WQRO
 github.com/hashicorp/mdns v1.0.0/go.mod h1:tL+uN++7HEJ6SQLQ2/p+z2pH24WQKWjBPkE0mNTz8vQ=
 github.com/hashicorp/memberlist v0.1.3/go.mod h1:ajVTdAv/9Im8oMAAj5G31PhhMCZJV2pPBoIllUwCN7I=
 github.com/hashicorp/serf v0.8.2/go.mod h1:6hOLApaqBFA1NXqRQAsxw9QxuDEvNxSQRwA/JwenrHc=
-github.com/hitesh-sureify/grpc-demo v0.0.0-20210328145441-6c44f2c87996 h1:XudhfGnMVBLh17Cvg2QUHamhxC+IgPC/IxLPU19sDMs=
-github.com/hitesh-sureify/grpc-demo v0.0.0-20210328145441-6c44f2c87996/go.mod h1:wU7HqG7OXTNrbtmYqLHc9r8J/xeATkEv03MTS/Gnh28=
 github.com/hitesh-sureify/grpc-demo v0.0.0-20210328152118-c3e6e8452c26 h1:m1v6gh358PNzdxb3uAeifwicPNFYr6J4ixgC7gRzAzA=
 github.com/hitesh-sureify/grpc-demo v0.0.0-20210328152118-c3e6e8452c26/go.mod h1:wU7HqG7OXTNrbtmYqLHc9r8J/xeATkEv03MTS/Gnh28=
+github.com/hitesh-sureify/grpc-demo v0.0.0-20210328170500-7e30395c8448 h1:CG+iOKx6osed/MlZV1kNY2u2VuGPkKxUnMvcVnjroAs=
+github.com/hitesh-sureify/grpc-demo v0.0.0-20210328170500-7e30395c8448/go.mod h1:5fZHg1GSlCYNdQvrS8MOFZNL4PABak2aEspO3U2YBd4=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
 github.com/hudl/fargo v1.3.0/go.mod h1:y3CKSmjA+wD2gak7sUSXTAoopbhU08POFhmITJgmKTg=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=

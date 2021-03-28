@@ -31,7 +31,6 @@ type EmployeeAPI struct{
 func main(){
 
 	middleware.Register()
-	middleware.StartPrometheus()
 
 	conn, err := grpc.Dial(os.Getenv("GRPC_SRV_ADDR"), grpc.WithInsecure())
 	if err != nil{
