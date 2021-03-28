@@ -4,7 +4,7 @@ WORKDIR /api
 
 COPY . .
 
-ENV GRPC_SRV_ADDR employee-service:50052
+ENV GRPC_SRV_ADDR emp-srv:50052
 
 RUN go get .
 
