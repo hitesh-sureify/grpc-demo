@@ -15,14 +15,16 @@ docker:
   version: latest
 env:
   - name: GRPC_SRV_ADDR
-    value: "localhost:50052"
-  - name: DB_DRIVER
-    value: mysql
+    value: localhost:50052
   - name: DB_USER
-    value: hitesh
+    value: postgres
   - name: DB_PASS
-    value: 68c#sistEdgCD4
+    value: postgres
   - name: DB_NAME
-    value: MYSQLTEST
+    value: testdb
   - name: DB_HOST
-    value: 172.17.0.1:3306
+    value: localhost
+  - name: DB_PORT
+    value: 5432
+  - name: prometheus_port
+    value: 2112

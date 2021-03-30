@@ -10,6 +10,7 @@ RUN go mod download
 
 COPY . .
 
+# Below env vars not needed if set in .deploy-env.yaml
 ENV GRPC_SRV_ADDR :50052
 ENV DB_USER postgres
 ENV DB_PASS postgres
@@ -21,4 +22,4 @@ RUN go build
 
 EXPOSE 50052
 
-CMD ["./grpc-demo"]
+CMD ["./grpc-template"]

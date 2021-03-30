@@ -7,11 +7,11 @@ schema:
     path: .
     env:
       GRPC_SRV_ADDR: localhost:50052
-      DB_DRIVER: mysql
-      DB_USER: hitesh
-      DB_PASS: 68c#sistEdgCD4
-      DB_NAME: MYSQLTEST
-      DB_HOST: 172.17.0.1:3306
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_NAME: testdb
+      DB_HOST: localhost
+      prometheus_port: 2112
     commands:
       install:
         status: true
