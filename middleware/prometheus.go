@@ -3,7 +3,8 @@ package middleware
 import (
 	"net/http"
 	"os"
-	"log"
+
+	"github.com/hitesh-sureify/grpc-template/logger"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -46,11 +47,16 @@ var Emp_delete_fail_counter = prometheus.NewCounter(
 	})
 
 func Register() {
+	logger.Log.Info("registering of prometheus custom metrics starts")
+
 	prometheus.MustRegister(Incoming_api_req_counter)
 	prometheus.MustRegister(Emp_get_fail_counter)
 	prometheus.MustRegister(Emp_create_fail_counter)
 	prometheus.MustRegister(Emp_update_fail_counter)
 	prometheus.MustRegister(Emp_delete_fail_counter)
+
+
+	logger.Log.Info("registering of prometheus custom metrics ends")
 }
 
 func RunPrometheusServer() {
@@ -58,8 +64,9 @@ func RunPrometheusServer() {
 	http.Handle("/metrics", promhttp.Handler())
 	port := os.Getenv("prometheus_port")
 	go func() {
+		logger.Log.Info("starting prometheus server....")
 		if err := http.ListenAndServe(":"+port, nil); err != nil {
-			log.Fatalf("Unable to start a http server for prometheus. %v", err)
+			logger.Log.Warn("Unable to start a http server for prometheus : " + err.Error())
 		}
 	}()
 }
