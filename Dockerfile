@@ -11,11 +11,11 @@ RUN go mod download
 COPY . .
 
 ENV GRPC_SRV_ADDR :50052
-ENV DB_DRIVER mysql
-ENV DB_USER hitesh
-ENV DB_PASS 68c#sistEdgCD4
-ENV DB_NAME MYSQLTEST
-ENV DB_HOST 172.17.0.1:3306
+ENV DB_USER postgres
+ENV DB_PASS postgres
+ENV DB_NAME testdb
+ENV DB_HOST localhost
+ENV DB_PORT 5432
 
 RUN go build
 

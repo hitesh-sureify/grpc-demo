@@ -9,6 +9,7 @@ import (
 	pb "github.com/hitesh-sureify/grpc-template/proto"
 	"github.com/hitesh-sureify/grpc-template/db"
 	"github.com/hitesh-sureify/grpc-template/middleware"
+	"github.com/hitesh-sureify/grpc-template/logger"
 
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"google.golang.org/grpc"
@@ -32,6 +33,10 @@ func main() {
 
 	grpc_prometheus.Register(s)
 	middleware.RunPrometheusServer()
+
+	if err := logger.Init(-1, "2006-01-02T15:04:05Z07:00"); err != nil {
+		return fmt.Errorf("failed to initialize logger: %v", err)
+	}
 
 	if err := s.Serve(listen); err != nil {
 		log.Fatalf("failed to serve : %v", err)

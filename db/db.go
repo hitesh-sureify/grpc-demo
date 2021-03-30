@@ -5,7 +5,7 @@ import (
 	"strings"
 	"fmt"
 	"context"
-	//"os"
+	"os"
 
 	pb "github.com/hitesh-sureify/grpc-template/proto"
 	_ "github.com/go-sql-driver/mysql"
@@ -21,12 +21,12 @@ type Employee struct{
 }
 
 func NewDBConn() (con *pg.DB) {
-	address := fmt.Sprintf("%s:%s", "localhost", "5432")
+	address := fmt.Sprintf("%s:%s", os.Getenv("DB_HOST"), os.Getenv("DB_PORT"))
 	options := &pg.Options{
-	   User:     "postgres",
-	   Password: "postgres",
+	   User:     os.Getenv("DB_USER"),
+	   Password: os.Getenv("DB_PASS"),
 	   Addr:     address,
-	   Database: "testdb",
+	   Database: os.Getenv("DB_NAME"),
 	   PoolSize: 50,
 	}
  con = pg.Connect(options)
