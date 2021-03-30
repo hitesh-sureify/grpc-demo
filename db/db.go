@@ -1,134 +1,116 @@
 package db
 
 import (
-    "database/sql"
+    //"database/sql"
 	"strings"
 	"fmt"
 	"context"
-	"os"
+	//"os"
 
-	pb "github.com/hitesh-sureify/grpc-demo/proto"
-    _ "github.com/go-sql-driver/mysql"
+	pb "github.com/hitesh-sureify/grpc-template/proto"
+	_ "github.com/go-sql-driver/mysql"
+	
+	pg "github.com/go-pg/pg/v10"
 )
 
-func dbConn() (db *sql.DB) {
-    db, err := sql.Open(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER")+":"+os.Getenv("DB_PASS")+"@tcp(" + os.Getenv("DB_HOST") + ")/"+os.Getenv("DB_NAME"))
-    if err != nil {
-        panic(err.Error())
-    }
-    return db
+type Employee struct{
+	Id     int32    `json:"id"`
+	Name   string   `json:"name"`
+	Dept   string   `json:"dept"`
+	Skills string   `json:"skills"`
 }
+
+func NewDBConn() (con *pg.DB) {
+	address := fmt.Sprintf("%s:%s", "localhost", "5432")
+	options := &pg.Options{
+	   User:     "postgres",
+	   Password: "postgres",
+	   Addr:     address,
+	   Database: "testdb",
+	   PoolSize: 50,
+	}
+ con = pg.Connect(options)
+	if con == nil {
+	   fmt.Println("cannot connect to postgres")
+	} else{
+	fmt.Println("connect to postgres")
+	}
+ return con
+ }
+
+ func SelectDBPost(pg *pg.DB, id pb.ID) {
+	emp := &Employee{}
+	err := pg.Model(emp).Where("id = ?", id.Id).First()
+	fmt.Println(emp)
+	fmt.Println(err)
+ }
 
 func Get(id int32) (*pb.Employee, error) {
 
-    db := dbConn()
+    db := NewDBConn()
 	defer db.Close()
 
-	var emp pb.Employee
-	var skills string
+	empObj := &Employee{}
+	emp := pb.Employee{}
 
-    err := db.QueryRow("SELECT name, dept, skills FROM employees WHERE id=?;", id).Scan(&emp.Name, &emp.Dept, &skills)
+	fmt.Println(id)
+
+    err := db.Model(empObj).Where("id = ?", id).First()
     if err != nil {
         return nil, err
 	}
-	emp.Skills = strings.Split(skills, ",")
+
+	fmt.Println(empObj)
+
+	emp.Id = empObj.Id
+	emp.Name = empObj.Name
+	emp.Dept = empObj.Dept
+	emp.Skills = strings.Split(empObj.Skills, ",")
 
 	return &emp, nil
 }
 
-func Insert(ctx context.Context, emp *pb.Employee) (int32,error) {
-    db := dbConn()
+func Insert(ctx context.Context, emp *pb.Employee) (int, error) {
+    db := NewDBConn()
 	defer db.Close()
 
-	stmt := fmt.Sprintf("insert into employees(name, dept, skills) values ('%s', '%s', '%s');", emp.Name, emp.Dept, strings.Join(emp.Skills, ","))
-	
-	tx, err := db.BeginTx(ctx, nil)
+	empObj := &Employee{Id : emp.Id, Dept : emp.Dept, Name : emp.Name, Skills : strings.Join(emp.Skills, ",")}
+
+	res, err := db.Model(empObj).Insert()
+
 	if err != nil {
-		return 0, err
+		return -1, err
 	}
 
-
-	res, err := tx.ExecContext(ctx, stmt)
-	if err != nil {
-		tx.Rollback()
-		return 0, err
-	}
-
-	lastInsertId, err := res.LastInsertId()
-	if err != nil {
-		tx.Rollback()
-		return 0, err
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		return 0, err
-	}
-	return int32(lastInsertId), nil
+	return res.RowsAffected(), nil
 }
 
-func Update(ctx context.Context, emp *pb.Employee) (int32,error) {
+func Update(ctx context.Context, emp *pb.Employee) (int, error) {
 
 
-	db := dbConn()
+	db := NewDBConn()
 	defer db.Close()
 
-	stmt := fmt.Sprintf("update employees set name='%s', dept='%s', skills='%s' WHERE id='%d';", emp.Name, emp.Dept, strings.Join(emp.Skills, ","), emp.Id)
-	
-	tx, err := db.BeginTx(ctx, nil)
-	if err != nil {
-		return -1, err
-	}
+	empObj := &Employee{Id : emp.Id, Dept : emp.Dept, Name : emp.Name, Skills : strings.Join(emp.Skills, ",")}
 
-
-	res, err := tx.ExecContext(ctx, stmt)
-	if err != nil {
-		tx.Rollback()
-		return -1, err
-	}
-
-	count, err := res.RowsAffected()
-	if err != nil {
-		tx.Rollback()
-		return -1, err
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		return -1, err
-	}
-
-	return int32(count), nil
-}
-
-func Delete(ctx context.Context, id int32) (int32,error) {
-    db := dbConn()
-	defer db.Close()
-	
-	stmt := fmt.Sprintf("delete from employees where id = '%d';", id)
-
-	tx, err := db.BeginTx(ctx, nil)
-	if err != nil {
-		return -1, err
-	}
-
-    res, err := db.ExecContext(ctx, stmt)
+	res, err := db.Model(empObj).Where("id = ?", emp.Id).Update()
     if err != nil {
-		fmt.Println(err)
-        tx.Rollback()
-		return -1, err
-	}
-	
-	count, err := res.RowsAffected()
-	if err != nil {
-		tx.Rollback()
-		return -1, err
-	}
-	
-    err = tx.Commit()
-	if err != nil {
-		return -1, err
+        return -1, err
 	}
 
-	return int32(count), nil
+	return res.RowsAffected(), nil
+}
+
+func Delete(ctx context.Context, id *pb.ID) (int, error) {
+    db := NewDBConn()
+	defer db.Close()
+
+	empObj := &Employee{}
+	
+	res, err := db.Model(empObj).Where("id = ?", id.Id).Delete()
+	if err != nil {
+        return -1, err
+	}
+
+	return res.RowsAffected(), nil
 }

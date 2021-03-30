@@ -1,0 +1,28 @@
+#@data/values
+---
+name: grpc-template
+service:
+  name: grpc-template
+  enabled: true
+  type: ClusterIP
+  ports:
+    - name: grpc
+      port: 50054
+    - name: prometheus
+      port: 2112
+docker:
+  image: grpc-template
+  version: latest
+env:
+  - name: GRPC_SRV_ADDR
+    value: "localhost:50052"
+  - name: DB_DRIVER
+    value: mysql
+  - name: DB_USER
+    value: hitesh
+  - name: DB_PASS
+    value: 68c#sistEdgCD4
+  - name: DB_NAME
+    value: MYSQLTEST
+  - name: DB_HOST
+    value: 172.17.0.1:3306

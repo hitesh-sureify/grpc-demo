@@ -3,6 +3,7 @@ module github.com/hitesh-sureify/grpc-demo
 go 1.15
 
 require (
+	github.com/go-pg/pg/v10 v10.9.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/prometheus/client_golang v1.10.0
 	google.golang.org/grpc v1.36.1

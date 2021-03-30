@@ -1,0 +1,30 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+  - name: grpc-template
+    path: .
+    env:
+      GRPC_SRV_ADDR: localhost:50052
+      DB_DRIVER: mysql
+      DB_USER: hitesh
+      DB_PASS: 68c#sistEdgCD4
+      DB_NAME: MYSQLTEST
+      DB_HOST: 172.17.0.1:3306
+    commands:
+      install:
+        status: true
+        method: go build -o build main.go
+      run:
+        status: true
+        method: ./build
+    watcher:
+      extensions:
+        - go
+      paths:
+        - /
+      ignored_paths:
+        - .git
+        - .realize
+        - vendor
