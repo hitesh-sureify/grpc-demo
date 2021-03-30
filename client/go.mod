@@ -1,4 +1,4 @@
-module github.com/hitesh-sureify/GrpcDemo/client
+module github.com/hitesh-sureify/grpc-template/client
 
 go 1.15
 

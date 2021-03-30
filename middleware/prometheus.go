@@ -2,7 +2,8 @@ package middleware
 
 import (
 	"net/http"
-	//"os"
+	"os"
+	"log"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -55,7 +56,7 @@ func Register() {
 func RunPrometheusServer() {
 	Register()
 	http.Handle("/metrics", promhttp.Handler())
-	port := env.MustGet("prometheus_port")
+	port := os.Getenv("prometheus_port")
 	go func() {
 		if err := http.ListenAndServe(":"+port, nil); err != nil {
 			log.Fatalf("Unable to start a http server for prometheus. %v", err)

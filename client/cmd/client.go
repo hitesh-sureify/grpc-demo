@@ -10,7 +10,7 @@ import(
 	"fmt"
 	"strconv"
 
-	pb "github.com/hitesh-sureify/grpc-demo/proto"
+	pb "github.com/hitesh-sureify/grpc-template/proto"
 
 	"google.golang.org/grpc"
 )
