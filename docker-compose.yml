@@ -1,0 +1,27 @@
+version: '3.1'
+services:
+  web:
+    build: .
+    image: grpc-template
+    restart: always
+    ports:
+      - 50052:50052
+    links:
+      - db
+    environment:
+      - GRPC_SRV_ADDR=:50052
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=testdb
+      - DB_HOST=db
+      - DB_PORT=5432
+  db:
+    image: postgres
+    ports: 
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testdb
+    volumes:
+    - ./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
