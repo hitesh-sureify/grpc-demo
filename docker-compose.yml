@@ -6,6 +6,7 @@ services:
     restart: always
     ports:
       - 50052:50052
+      - 2112:2112
     links:
       - db
     environment:
@@ -15,6 +16,7 @@ services:
       - DB_NAME=testdb
       - DB_HOST=db
       - DB_PORT=5432
+      - prometheus_port=2112
   db:
     image: postgres
     ports: 

@@ -23,7 +23,7 @@ env:
   - name: DB_NAME
     value: testdb
   - name: DB_HOST
-    value: localhost
+    value: db
   - name: DB_PORT
     value: 5432
   - name: prometheus_port

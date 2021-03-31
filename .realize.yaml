@@ -10,7 +10,8 @@ schema:
       DB_USER: postgres
       DB_PASS: postgres
       DB_NAME: testdb
-      DB_HOST: localhost
+      DB_HOST: db
+      DB_PORT: 5432
       prometheus_port: 2112
     commands:
       install:
